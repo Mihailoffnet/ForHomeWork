@@ -1,23 +1,14 @@
-import psycopg2 # сначала надо установить библиотеку командой pip install psycopg2-binary
+import psycopg2 
 
-# загружаю свой пароль
-with open('token.txt', 'r') as file_object:
+# создаю базу 
+# createdb -U postgres clients_db
+
+# Поместите в корень файл psw.txt с паролем к пользователю postgres вашей БД
+# или пропишите его в переменную psw
+
+# загружаю пароль из файла
+with open('psw.txt', 'r') as file_object:
     psw = file_object.readline().strip()
-
-# # для работы с БД нужно открыть и закрыть соединение connect и курсор cur
-# connect = psycopg2.connect(database="netology_db", user="postgres", password=psw)
-# cur = connect.cursor()
-# cur.execute("CREATE TABLE IF NOT EXISTS test(id SERIAL PRIMARY KEY);")
-# connect.commit() # применить измененения (завершить транзакцию)
-# # или
-# connect.rollback() # отменить все изменения
-# # не забываем после закрыть курсор и коннект
-# cur.close()
-# connect.close()
-
-# # чтобы не открывать и не закрывать каждый раз курсор, можно для них использовать контекстный менеджер with
-
-# createdb -U postgress clients_db
 
 with psycopg2.connect(database="clients_db", user="postgres", password=psw) as conn:
     with conn.cursor() as cur:
@@ -26,6 +17,7 @@ with psycopg2.connect(database="clients_db", user="postgres", password=psw) as c
         DROP TABLE phone;
         DROP TABLE name;
         """)
+    conn.commit()
 
 def create_db(conn):
     with conn.cursor() as cur:
@@ -37,191 +29,169 @@ def create_db(conn):
         
         CREATE TABLE IF NOT exists phone (
         phone_id SERIAL PRIMARY KEY, phone_number VARCHAR(20) UNIQUE not null
-        check (phone_number ~* '^([+][0-9]{10})$'),
+        check (phone_number ~* '^([+][0-9]{11})$'),
         name_id INTEGER REFERENCES name(name_id) not null);
         """)
+        conn.commit()
         # print(cur.fetchall())
         # return cur.fetchall()
 
 def add_client(conn, first_name, surname, email, phones=None):
     with conn.cursor() as cur:
-        if phones == None:
-            cur.execute("""
-            INSERT INTO name(first_name, surname, email) 
+        cur.execute("""
+        INSERT INTO name(first_name, surname, email) 
             VALUES 
                 (%s, %s, %s) RETURNING *;
-                """, (first_name, surname, email))
-            print(f' Был добавлен клиент {cur.fetchall()}')
-            return cur.fetchall()
+            """, (first_name, surname, email))
+        name_id = cur.fetchone()[0]
+        print(f'Был добавлен клиент {name_id} - {first_name} {surname}, {email}')
+        if phones != None:
+            add_phone(conn, name_id, phones)
+        conn.commit()
+        return cur.fetchone()
 
-
-def add_phone(conn, client_id, phone):
+def add_phone(conn, name_id, phones):
     with conn.cursor() as cur:
         cur.execute("""
-        INSERT INTO phone(client_id, phone) 
+        INSERT INTO phone(name_id, phone_number) 
             VALUES 
-                (client_id, phone) RETURNING *;
-        """)
-        print(cur.fetchall())
-        return cur.fetchall()
+                (%s, %s) RETURNING *;
+        """, (name_id, phones))
+        print(f'Был добавлен телефон {phones} клиенту {name_id}')
+        conn.commit()
 
+def change_client(conn, name_id, first_name=None, surname=None, email=None):
+    with conn.cursor() as cur:
+        if first_name != None:
+            cur.execute("""
+            UPDATE name SET first_name = %s WHERE name_id = %s RETURNING *;
+            """, (first_name, name_id))
+            print(f'Было изменено имя клиента {name_id} на {first_name}') 
+        if surname != None:
+            cur.execute("""
+            UPDATE name SET surname = %s WHERE name_id = %s RETURNING *;
+            """, (surname, name_id))
+            print(f'Была изменена фамилия клиента {name_id} на {surname}') 
+        if email != None:
+            cur.execute("""
+            UPDATE name SET email = %s WHERE name_id = %s RETURNING *;
+            """, (email, name_id))
+            print(f'Был изменен email клиента {name_id} на {email}') 
+        conn.commit()
+
+def delete_phone(conn, phones):
+    with conn.cursor() as cur:
+        cur.execute("""
+        SELECT name_id FROM phone WHERE phone_number = %s;
+        """, (phones,))
+        name_id = cur.fetchone()[0]
+
+        cur.execute("""
+        DELETE FROM phone WHERE phone_number = %s;
+        """, (phones,))
+        print(f'Удален номер телефона {phones} клиента {name_id}') 
+    conn.commit()
+
+def delete_client(conn, name_id):
+    with conn.cursor() as cur:
+        cur.execute("""
+        SELECT * FROM phone WHERE name_id = %s;
+        """, (name_id,));
+        res = cur.fetchone()
+        while res != None:
+            delete_phone(conn, res[1])
+            cur.execute("""
+            SELECT * FROM phone WHERE name_id = %s;
+            """, (name_id,));
+            res = cur.fetchone()
+        cur.execute("""
+        DELETE FROM name WHERE name_id = %s;
+        """, (name_id,));
+        print(f'Данные клиента {name_id} полностью удалены')
+    conn.commit()
+
+def find_client(conn, first_name=None, surname=None, email=None, phones=None):
+    with conn.cursor() as cur:
+        if first_name != None:
+            cur.execute("""
+            SELECT * FROM name WHERE first_name = %s;
+           """, (first_name,));
+            res = cur.fetchall()
+            if res == []:
+                print(f'По имени {first_name} клиентов не найдено')
+            for client in res:
+                print(f'По имени {first_name} наден клиент {client}')
+        if surname != None:
+            cur.execute("""
+            SELECT * FROM name WHERE surname = %s;
+           """, (surname,));
+            res = cur.fetchall()
+            if res == []:
+                print(f'По фамилии {surname} клиентов не найдено')
+            for client in res:
+                print(f'По фамилии {surname} наден клиент {client}')
+        if email != None:
+            cur.execute("""
+            SELECT * FROM name WHERE email = %s;
+           """, (email,));
+            res = cur.fetchall()
+            if res == []:
+                print(f'По электронной почте {email} клиентов не найдено')
+            for client in res:
+                print(f'По электронной почте {email} наден клиент {client}')
+        if phones != None:
+            cur.execute("""
+            SELECT name_id FROM phone WHERE phone_number = %s;
+           """, (phones,));
+            res = cur.fetchone()
+            if res == None:
+                print(f'По телефону {phones} клиентов не найдено')
+            else:
+                name_id = res[0]
+                cur.execute("""
+                SELECT * FROM name WHERE name_id = %s;
+                """, (name_id ,));
+                res = cur.fetchone()
+                print(f'По телефону {phones} наден клиент {res}')
+    conn.commit()
+    return res
+
+
+# вызов функции
 with psycopg2.connect(database="clients_db", user="postgres", password=psw) as conn:
-    # вызов функции
     create_table = create_db(conn)
+    add_client(conn, 'Виктор', 'Михайлов', 'mihailoff@inbox.ru', '+79170000001')
+    add_client(conn, 'Второй', 'Студент', 'second_studen@mail.com')
+    add_client(conn, 'Третий', 'Лишний','third.1@gmail.com', '+79170000003')
+    add_client(conn, 'Четвертый', 'Запасной','fourth@yandex.ru', '+79170000004')
+    add_client(conn, 'Пятый', 'Элемент', 'fifth@mail.ru')
+    add_client(conn, 'Виктор', 'Студент', 'viktor@mail.ru', '+79170000005')
     print()
-    add_client = add_client(conn, 'Михайлов', 'Виктор', 'mihailoff@inbox.ru')
+    add_phone(conn, 1, '+79170000002')
+    add_phone(conn, 5, '+79170000010')
+    add_phone(conn, 1, '+79170000011')
     print()
+    change_client(conn, 2, first_name='Второй2', surname='Студент2')
+    change_client(conn, 3, surname='Лишний2', email='third.2@gmail.com')
+    change_client(conn, 5, first_name='Пятый2')
+    print()
+    delete_phone(conn, '+79170000010')   
+    delete_phone(conn, '+79170000004')
+    print()
+    find_client(conn, first_name='Виктор')
+    find_client(conn, first_name='Второй2')
+    find_client(conn, first_name='Второй')
+    print()
+    find_client(conn, surname='Лишний2')
+    find_client(conn, surname='Чужой')
+    print()
+    find_client(conn, email='mihailoff@inbox.ru')
+    find_client(conn, email='mmm@inbox.ru')
+    print()
+    find_client(conn, phones='+79170000005')
+    find_client(conn, phones='+79170000020')
+    print()
+    delete_client(conn, 1)
+    delete_client(conn, 2)
 
-
-conn.close()
-
-# with psycopg2.connect(database="netology_db", user="postgres", password=psw) as conn:
-#     with conn.cursor() as cur:
-#         # удаление таблиц
-#         cur.execute("""
-#         DROP TABLE homework;
-#         DROP TABLE course;
-#         """)
-
-#         # создание таблиц
-#         cur.execute("""
-#         CREATE TABLE IF NOT EXISTS course(
-#             id SERIAL PRIMARY KEY,
-#             name VARCHAR(40) UNIQUE
-#         );
-#         """)
-#         cur.execute("""
-#         CREATE TABLE IF NOT EXISTS homework(
-#             id SERIAL PRIMARY KEY,
-#             number INTEGER NOT NULL,
-#             description TEXT NOT NULL,
-#             course_id INTEGER NOT NULL REFERENCES course(id)
-#         );
-#         """)
-#         conn.commit()  # фиксируем в БД
-
-#         # наполнение таблиц (C из CRUD)
-#         cur.execute("""
-#         INSERT INTO course(name) VALUES('Python');
-#         """)
-#         conn.commit()  # фиксируем в БД
-
-#         cur.execute("""
-#         INSERT INTO course(name) VALUES('Java') RETURNING *;
-#         """)
-#         print(cur.fetchone())  # запрос данных 1 строка (fetchONE). 
-#         # запрос данных автоматически зафиксирует изменения
-
-#         cur.execute("""
-#         INSERT INTO homework(number, description, course_id) VALUES(1, 'простое дз', 1)
-#         RETURNING *;
-#         """)
-#         print(cur.fetchone())
-#         conn.commit()  # фиксируем в БД
-
-#         # извлечение данных (R из CRUD)
-#         cur.execute("""
-#         SELECT * FROM course;
-#         """)
-#         print('fetchall', cur.fetchall())  # извлечь все строки (fetchALL)
-
-#         cur.execute("""
-#         SELECT * FROM course;
-#         """)
-#         print('fetchone', cur.fetchone())  # извлечь первую строку (аналог LIMIT 1)
-
-#         cur.execute("""
-#         SELECT * FROM course;
-#         """)
-#         print('fetchmany', cur.fetchmany(3))  # извлечь первые N строк (аналог LIMIT N)
-
-#         cur.execute("""
-#         SELECT name FROM course;
-#         """)
-#         print(cur.fetchall())
-
-#         cur.execute("""
-#         SELECT id FROM course WHERE name='Python';
-#         """)
-#         print(cur.fetchone())
-
-# #         cur.execute("""
-# #         SELECT id FROM course WHERE name='{}';
-# #         """.format("Python"))  # плохо - возможна SQL инъекция
-# #         print(cur.fetchone())
-
-#         cur.execute("""
-#         SELECT id FROM course WHERE name=%s;
-#         """, ("Python",))  # хорошо, обратите внимание на кортеж
-#         print(cur.fetchone())
-
-#         def get_course_id(cursor, name: str) -> int:
-#             cursor.execute("""
-#             SELECT id FROM course WHERE name=%s;
-#             """, (name,))
-#             return cur.fetchone()[0]
-        
-#         # вызов функции
-#         python_id = get_course_id(cur, 'Python')
-#         print('python_id', python_id)
-
-#         cur.execute("""
-#         INSERT INTO homework(number, description, course_id) VALUES(%s, %s, %s);
-#         """, (2, "задание посложнее", python_id))
-#         conn.commit()  # фиксируем в БД
-
-#         cur.execute("""
-#         SELECT * FROM homework;
-#         """)
-#         print(cur.fetchall())
-
-#         # обновление данных (U из CRUD)
-#         cur.execute("""
-#         UPDATE course SET name=%s WHERE id=%s;
-#         """, ('Python Advanced', python_id))
-#         cur.execute("""
-#         SELECT * FROM course;
-#         """)
-#         print(cur.fetchall())  # запрос данных автоматически зафиксирует изменения
-
-#         # удаление данных (D из CRUD)
-#         cur.execute("""
-#         DELETE FROM homework WHERE id=%s;
-#         """, (1,))
-#         cur.execute("""
-#         SELECT * FROM homework;
-#         """)
-#         print(cur.fetchall())  # запрос данных автоматически зафиксирует изменения
-
-# conn.close()
-
-
-
-# # CREATE TABLE IF NOT exists name (
-# # 	name_id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT null, 
-# # 	surname VARCHAR(50) NOT null, email VARCHAR(60) UNIQUE NOT null 
-# # 	check (email ~* '^([a-zA-Z0-9_/.-]+)@([a-zA-Z0-9_/.-]+).([a-zA-Z0-9_/.-]+)$'));
-
-
-# # CREATE TABLE IF NOT exists phone (
-# # 	phone_id SERIAL PRIMARY KEY, phone_number VARCHAR(20) UNIQUE not null
-# # 	check (phone_number ~* '^([+][0-9]{10})$'),
-# # 	name_id INTEGER REFERENCES name(name_id) not null);
-
-# # INSERT INTO name(first_name, surname, email) 
-# # VALUES 
-# # 	('Виктор', 'Михайлов', 'mihailoff@inbox.ru'),
-# # 	('Второй', 'Студент', 'second_studen@mail.com'),
-# # 	('Третий', 'Лишний','third.1@gmail.com'),
-# # 	('Четвертый', 'Запасной','fourth@yandex.ru'),
-# # 	('Пятый', 'Элемент', 'fifth@mail.ru'),
-# # 	('Виктор', 'Студент', 'viktor@mail.ru');
-
-# # INSERT INTO phone(name_id, phone_number) 
-# # VALUES 
-# # 	(1, '+7917000000'),
-# # 	(1, '+7917000001'),
-# # 	(2, '+7917000002'),
-# # 	(3, '+7917000003'),
-# # 	(4, '+7917000004'),
-# # 	(4, '+7917000005');
+conn.close
