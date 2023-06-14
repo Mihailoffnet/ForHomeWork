@@ -11,7 +11,8 @@ psw = ''
 # with open('psw.txt', 'r') as file_object:
 #     psw = file_object.readline().strip()
 
-with psycopg2.connect(database="clients_db", user="postgres", password=psw) as conn:
+with psycopg2.connect(database="clients_db", 
+                      user="postgres", password=psw) as conn:
     with conn.cursor() as cur:
         # удаление таблиц
         cur.execute("""
@@ -26,7 +27,8 @@ def create_db(conn):
         CREATE TABLE IF NOT exists name (
     	name_id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT null, 
     	surname VARCHAR(50) NOT null, email VARCHAR(60) UNIQUE NOT null 
-     	check (email ~* '^([a-zA-Z0-9_/.-]+)@([a-zA-Z0-9_/.-]+).([a-zA-Z0-9_/.-]+)$'));
+     	check (email ~* 
+        '^([a-zA-Z0-9_/.-]+)@([a-zA-Z0-9_/.-]+).([a-zA-Z0-9_/.-]+)$'));
         
         CREATE TABLE IF NOT exists phone (
         phone_id SERIAL PRIMARY KEY, phone_number VARCHAR(20) UNIQUE not null
@@ -45,7 +47,7 @@ def add_client(conn, first_name, surname, email, phones=None):
                 (%s, %s, %s) RETURNING *;
             """, (first_name, surname, email))
         name_id = cur.fetchone()[0]
-        print(f'Был добавлен клиент {name_id} - {first_name} {surname}, {email}')
+        print(f'Добавлен клиент {name_id} - {first_name} {surname}, {email}')
         if phones != None:
             add_phone(conn, name_id, phones)
         conn.commit()
@@ -58,7 +60,7 @@ def add_phone(conn, name_id, phones):
             VALUES 
                 (%s, %s) RETURNING *;
         """, (name_id, phones))
-        print(f'Был добавлен телефон {phones} клиенту {name_id}')
+        print(f'Добавлен телефон {phones} клиенту {name_id}')
         conn.commit()
 
 def change_client(conn, name_id, first_name=None, surname=None, email=None):
@@ -67,17 +69,17 @@ def change_client(conn, name_id, first_name=None, surname=None, email=None):
             cur.execute("""
             UPDATE name SET first_name = %s WHERE name_id = %s RETURNING *;
             """, (first_name, name_id))
-            print(f'Было изменено имя клиента {name_id} на {first_name}') 
+            print(f'Изменено имя клиента {name_id} на {first_name}') 
         if surname != None:
             cur.execute("""
             UPDATE name SET surname = %s WHERE name_id = %s RETURNING *;
             """, (surname, name_id))
-            print(f'Была изменена фамилия клиента {name_id} на {surname}') 
+            print(f'Изменена фамилия клиента {name_id} на {surname}') 
         if email != None:
             cur.execute("""
             UPDATE name SET email = %s WHERE name_id = %s RETURNING *;
             """, (email, name_id))
-            print(f'Был изменен email клиента {name_id} на {email}') 
+            print(f'Изменен email клиента {name_id} на {email}') 
         conn.commit()
 
 def delete_phone(conn, phones):
@@ -159,12 +161,15 @@ def find_client(conn, first_name=None, surname=None, email=None, phones=None):
 
 
 # вызов функции
-with psycopg2.connect(database="clients_db", user="postgres", password=psw) as conn:
+with psycopg2.connect(database="clients_db", 
+                      user="postgres", password=psw) as conn:
     create_table = create_db(conn)
-    add_client(conn, 'Виктор', 'Михайлов', 'mihailoff@inbox.ru', '+79170000001')
+    add_client(conn, 'Виктор', 'Михайлов', 'mihailoff@inbox.ru', 
+               '+79170000001')
     add_client(conn, 'Второй', 'Студент', 'second_studen@mail.com')
     add_client(conn, 'Третий', 'Лишний','third.1@gmail.com', '+79170000003')
-    add_client(conn, 'Четвертый', 'Запасной','fourth@yandex.ru', '+79170000004')
+    add_client(conn, 'Четвертый', 'Запасной','fourth@yandex.ru', 
+               '+79170000004')
     add_client(conn, 'Пятый', 'Элемент', 'fifth@mail.ru')
     add_client(conn, 'Виктор', 'Студент', 'viktor@mail.ru', '+79170000005')
     print()
