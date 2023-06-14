@@ -1,14 +1,15 @@
 import psycopg2 
 
-# создаю базу 
+# база данных создана
 # createdb -U postgres clients_db
 
-# Поместите в корень файл psw.txt с паролем к пользователю postgres вашей БД
-# или пропишите его в переменную psw
+# пропишите пароль в переменную psw
+psw = ''
 
-# загружаю пароль из файла
-with open('psw.txt', 'r') as file_object:
-    psw = file_object.readline().strip()
+# Или поместите в корень файл psw.txt с паролем к пользователю postgres вашей БД
+# и разкоментируйте код ниже
+# with open('psw.txt', 'r') as file_object:
+#     psw = file_object.readline().strip()
 
 with psycopg2.connect(database="clients_db", user="postgres", password=psw) as conn:
     with conn.cursor() as cur:
