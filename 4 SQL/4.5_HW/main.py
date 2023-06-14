@@ -11,15 +11,16 @@ psw = ''
 # with open('psw.txt', 'r') as file_object:
 #     psw = file_object.readline().strip()
 
-with psycopg2.connect(database="clients_db", 
-                      user="postgres", password=psw) as conn:
-    with conn.cursor() as cur:
-        # удаление таблиц
-        cur.execute("""
-        DROP TABLE phone;
-        DROP TABLE name;
-        """)
-    conn.commit()
+# удаление таблиц. Не нужно для первого запуска
+# with psycopg2.connect(database="clients_db", 
+#                       user="postgres", password=psw) as conn:
+#     with conn.cursor() as cur:
+#         # удаление таблиц
+#         cur.execute("""
+#         DROP TABLE phone;
+#         DROP TABLE name;
+#         """)
+#     conn.commit()
 
 def create_db(conn):
     with conn.cursor() as cur:
