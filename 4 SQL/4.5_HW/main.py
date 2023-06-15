@@ -51,7 +51,7 @@ def add_client(conn, first_name, surname, email, phones=None):
             VALUES 
                 (%s, %s, %s) RETURNING *;
                 """, (first_name, surname, email))
-            print(f' Был добавлен клиент {cur.fetchall()}')
+            print(f' Был добавлен клиент с email {cur.fetchone()[3]}')
             return cur.fetchall()
 
 
