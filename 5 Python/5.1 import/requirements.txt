@@ -1,2 +1,2 @@
-emoji
-datetime
+emoji==2.6.0
+DateTime==5.1
