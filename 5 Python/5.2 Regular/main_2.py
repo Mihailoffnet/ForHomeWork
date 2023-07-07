@@ -24,7 +24,6 @@ for row in contacts_list:
 count = -1
 for row in contacts_list:
     count += 1
-    # print(row[0])
     if ' ' in row[0]:
         temp_list = row[0].split()
         contacts_list[count][0] = temp_list[0]
@@ -71,23 +70,17 @@ for row in final_contacts_list:
     count_row += 1
     # паттерн получился более 79 символов. Разбил его на два и склеил, 
     # чтобы уложиться в PEP8. Или как лучше такое делать?
-    pattern_1 = r"(\+7|8)\s*[\-\(]*(\d{3})[\s\-\)]*(\d{3})*[\s\-]*"
-    pattern_2 = r"(\d{2})*[\s\-]*(\d{2})"
+    pattern_1 = r"(\+7|8)\s*[\-\(]*(\d{3})[\s\-\)]*(\d{3})*[\s\-]*(\d{2})*"
+    pattern_2 = r"[\s\-]*(\d{2})\s*\(*(доб.)*\s*(\d+)*\)*"
     pattern = f'{pattern_1}{pattern_2}'
-    pattern_repl = r"+7(\2)\3-\4-\5"
+    pattern_repl = r"+7(\2)\3-\4-\5 \6\7"
     phone = re.sub(pattern, pattern_repl, row[5])
     final_contacts_list[count_row][5] = phone
 
-count_row = -1
-for row in final_contacts_list:
-    count_row += 1
-    phone2 = re.sub(r"\(*доб.\s*(\d+)\)*", r"доб.\1", row[5])
-    final_contacts_list[count_row][5] = phone2
+# 2. Сохраняем получившиеся данные в другой файл.
 
-# 2. Сохраните получившиеся данные в другой файл.
-# Код для записи файла в формате CSV:
 file_name = "phonebook.csv"
-with open("phonebook.csv", "w", encoding="utf-8") as f:
+with open(file_name, "w", encoding="utf-8") as f:
     datawriter = csv.writer(f, delimiter=',',    lineterminator='\n' )
     datawriter.writerows(final_contacts_list)
     print(f'Данные успешно помещены в файл {file_name}')
