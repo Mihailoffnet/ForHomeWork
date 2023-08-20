@@ -1,0 +1,38 @@
+CREATE table if not exists jenre (
+	jenre_id SERIAL primary key, 
+	jenre_name VARCHAR(50) unique NOT NULL);
+
+CREATE table if not exists singer (
+	singer_id SERIAL primary key, 
+	singer_name VARCHAR(80) NOT null);
+	
+CREATE TABLE IF NOT EXISTS singer_jenre (
+	jenre_id INTEGER REFERENCES jenre(jenre_id),
+	singer_id INTEGER REFERENCES singer(singer_id),
+	CONSTRAINT j_s PRIMARY KEY (jenre_id, singer_id));
+
+CREATE table if not exists album (
+	album_id SERIAL primary key, 
+	album_name VARCHAR(80) NOT NULL,
+	album_years INTEGER NOT null check (album_years >= 1900 and album_years <= 2050));
+
+CREATE TABLE IF NOT EXISTS singer_album (
+	album_id INTEGER REFERENCES album(album_id),
+	singer_id INTEGER REFERENCES singer(singer_id),
+	CONSTRAINT s_a PRIMARY KEY (album_id, singer_id));
+
+CREATE table if not exists track (
+	track_id SERIAL primary key,
+	track_name VARCHAR(80) NOT null,
+	album_id INTEGER NOT NULL REFERENCES album (album_id), 
+	track_duration INTEGER NOT null check (track_duration > 10 and track_duration <= 3600));
+
+CREATE table if not exists collection (
+	collection_id SERIAL primary key, 
+	collection_name VARCHAR(60) NOT NULL,
+	collection_years INTEGER NOT NULL check (collection_years >= 1900 and collection_years <= 2050));
+
+CREATE TABLE IF NOT EXISTS track_collection(
+	track_id INTEGER REFERENCES track(track_id),
+	collection_id INTEGER REFERENCES collection(collection_id),
+	CONSTRAINT t_c PRIMARY KEY (track_id, collection_id));
