@@ -30,10 +30,29 @@ DATA = {
 # }
 
 def recipes_view(request, dishes=''):
-
     quantity = request.GET.get('servings', 1)
-    context = {
-        'quantity': int(quantity),
-        'dishes': dishes,
-    }
-    return render(request, 'calculator/index.html', context)
+    if not dishes:
+        context = {
+            'quantity': int(quantity),
+            'dishes': 'empty',
+            }
+        return render(request, 'calculator/index.html', context)
+
+    elif dishes in DATA.keys():
+        result_dict = {}
+        for key, value in DATA[dishes].items():
+            result_dict[key] = round(value * int(quantity), 2)
+        context = {
+            'quantity': int(quantity),
+            'dishes': dishes,
+            'recipe': result_dict
+            }
+        return render(request, 'calculator/index.html', context)
+
+    else:
+        result_dict = {
+            'quantity': int(quantity),
+            'dishes': 'not found',
+            }
+        context = result_dict
+        return render(request, 'calculator/index.html', context)
