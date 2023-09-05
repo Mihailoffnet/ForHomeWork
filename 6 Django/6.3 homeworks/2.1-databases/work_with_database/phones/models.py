@@ -11,5 +11,5 @@ class Phone(models.Model):
     slug = models.CharField(max_length=55, null=False)
 
     def __str__(self):
-        return f'{self.name=}, {self.price=}, {self.release_date=}, ' \
-               f'{self.lte_exist=}, {self.slug=}'
+        return f'{self.id}, {self.name}, {self.price}, {self.release_date}, ' \
+               f'{self.lte_exist}, {self.slug}'
