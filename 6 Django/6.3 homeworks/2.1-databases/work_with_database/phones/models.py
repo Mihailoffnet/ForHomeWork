@@ -7,9 +7,9 @@ class Phone(models.Model):
     image = models.CharField(max_length=255, null=True)
     price = models.IntegerField(null=True)
     release_date = models.DateField(null=True)
-    lte_exist = models.BooleanField(null=True)
+    lte_exists = models.BooleanField(null=True)
     slug = models.CharField(max_length=55, null=False)
 
     def __str__(self):
         return f'{self.id}, {self.name}, {self.price}, {self.release_date}, ' \
-               f'{self.lte_exist}, {self.slug}'
+               f'{self.lte_exists}, {self.slug}'
