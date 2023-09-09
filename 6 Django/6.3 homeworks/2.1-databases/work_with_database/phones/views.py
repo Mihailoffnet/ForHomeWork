@@ -47,7 +47,8 @@ def create_phone(request):
     lte_exists = request.GET.get('lte_exist', lte_exists)
     slug = name.replace(" ", "-")
     phone = Phone(id=id, name=name, image=image, price=price,
-                  release_date=release_date, lte_exists=bool(lte_exists), slug=slug)
+                  release_date=release_date, lte_exists=bool(lte_exists),
+                  slug=slug)
     phone.save()
     print(f'В базу добавлен телефон: {id=}, {name=}, {price=}')
     return HttpResponse(f'В базу добавлен телефон: {id=}, {name=}, {price=}')
