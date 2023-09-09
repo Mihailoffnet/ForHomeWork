@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
         with open('phones.csv', 'r') as file:
             phones = list(csv.DictReader(file, delimiter=';'))
-            msg = ''
+
             for row in phones:
                 id = row.get('id')
                 print(id)
