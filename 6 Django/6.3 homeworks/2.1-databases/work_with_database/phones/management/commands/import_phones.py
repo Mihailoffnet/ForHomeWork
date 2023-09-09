@@ -23,14 +23,14 @@ class Command(BaseCommand):
                 price = row.get('price', None)
                 release_date = row.get('release_date', None)
                 if row.get('lte_exists') == 'True':
-                    lte_exist = True
+                    lte_exists = True
                 else:
-                    lte_exist = False
+                    lte_exists = False
                 slug = name.replace(" ", "-")
 
                 phone = Phone(id=id, name=name, image=image, price=price,
                                      release_date=release_date,
-                                     lte_exist=lte_exist, slug=slug)
+                                     lte_exists=lte_exists, slug=slug)
                 phone.save()
                 print(f'В базу добавлен телефон {phone.name} и доступен по адресу http://127.0.0.1:8000/catalog/{slug}/')
 
