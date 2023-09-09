@@ -16,7 +16,8 @@ class Command(BaseCommand):
             phones = list(csv.DictReader(file, delimiter=';'))
             msg = ''
             for row in phones:
-                # phone_id = row.get('phone_id')
+                id = row.get('id')
+                print(id)
                 name = row.get('name', 'noname')
                 image = row.get('image', None)
                 price = row.get('price', None)
@@ -27,7 +28,7 @@ class Command(BaseCommand):
                     lte_exist = False
                 slug = name.replace(" ", "-")
 
-                phone = Phone(name=name, image=image, price=price,
+                phone = Phone(id=id, name=name, image=image, price=price,
                                      release_date=release_date,
                                      lte_exist=lte_exist, slug=slug)
                 phone.save()
