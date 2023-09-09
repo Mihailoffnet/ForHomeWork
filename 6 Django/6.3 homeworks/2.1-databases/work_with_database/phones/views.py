@@ -9,14 +9,12 @@ def show_catalog(request):
     template = 'catalog.html'
     sort = request.GET.get('sort', '')
 
-    if sort:
-        if sort == 'name':
+    if sort == 'name':
             phones = Phone.objects.order_by('name')
-        elif sort == 'min_price':
+    elif sort == 'min_price':
             phones = Phone.objects.order_by('price')
-        elif sort == 'max_price':
+    elif sort == 'max_price':
             phones = Phone.objects.order_by('price').reverse()
-
     else:
         phones = Phone.objects.all()
     context = {
@@ -28,7 +26,8 @@ def show_catalog(request):
 def show_product(request, slug):
     template = 'product.html'
     phone = Phone.objects.filter(slug=slug)[0]
-
+    print(phone.lte_exist)
+    print(type(phone.lte_exist))
     context = {
         'phone': phone,
     }
