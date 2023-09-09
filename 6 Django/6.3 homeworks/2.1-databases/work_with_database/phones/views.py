@@ -33,21 +33,22 @@ def show_product(request, slug):
     return render(request, template, context)
 
 def create_phone(request):
+    id = request.GET.get('id', )
     name = request.GET.get('name', 'noname')
     image = request.GET.get('image', None)
     price = request.GET.get('price', None)
     release_date = request.GET.get('release_date', None)
-    lte = request.GET.get('lte', False)
+    lte_exists = request.GET.get('lte_exists', False)
 
     name = request.GET.get('name', name)
     image = request.GET.get('image', image)
     price = request.GET.get('price', price)
     release_date = request.GET.get('release_date', release_date)
-    lte_exist = request.GET.get('lte_exist', lte)
+    lte_exists = request.GET.get('lte_exist', lte_exists)
     slug = name.replace(" ", "-")
-    phone = Phone(name=name, image=image, price=price,
-                  release_date=release_date, lte_exists=lte_exists, slug=slug)
+    phone = Phone(id=id, name=name, image=image, price=price,
+                  release_date=release_date, lte_exists=bool(lte_exists), slug=slug)
     phone.save()
     print(f'В базу добавлен телефон: {id=}, {name=}, {price=}')
-    return HttpResponse(f'В базу добавлен телефон: {name=}, {price=}')
+    return HttpResponse(f'В базу добавлен телефон: {id=}, {name=}, {price=}')
 
