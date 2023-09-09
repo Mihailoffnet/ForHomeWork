@@ -3,6 +3,8 @@ from django.db import models
 
 class Phone(models.Model):
     # phone_id = models.CharField('phone_id', max_length=50, primary_key=True)
+
+    # old version
     name = models.CharField(max_length=50, null=False)
     image = models.CharField(max_length=255, null=True)
     price = models.IntegerField(null=True)
