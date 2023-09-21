@@ -5,8 +5,8 @@ from django.db import models
 
 class Sensor(models.Model):
     name = models.CharField(max_length=15, verbose_name='Имя датчика')
-    description = models.TextField(max_length=500, blank=True, Null=True, 
-                                    verbose_name='Описание датчика')
+    description = models.TextField(max_length=500,
+                                   verbose_name='Описание датчика')
 
     class Meta:
         ordering = ['id']
