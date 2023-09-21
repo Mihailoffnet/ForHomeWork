@@ -61,5 +61,5 @@ Content-Type: application/json
 ###
 
 # Удаление датчика
-DELETE {{baseUrl}}/sensors/2/
+DELETE {{baseUrl}}/sensors/8/
 Content-Type: application/json

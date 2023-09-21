@@ -60,7 +60,7 @@ def sensors(request):
         ser = SensorSerializer(sensors, many=True)
         return Response(ser.data)
     elif request.method == 'POST':
-        sensor = Sensor(name='name1', description='description1')
+        sensor = Sensor(name='name8')
         sensor.save()
         data = {'message': f'Датчик: {sensor} успешно создан'}
         return Response(data)
