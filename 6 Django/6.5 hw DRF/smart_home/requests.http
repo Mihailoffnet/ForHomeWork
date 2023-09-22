@@ -22,7 +22,7 @@ Content-Type: application/json
 ###
 
 # обновление датчика
-PATCH {{baseUrl}}/sensors/5/
+PATCH {{baseUrl}}/sensors/1/
 Content-Type: application/json
 
 {
@@ -38,7 +38,7 @@ Content-Type: application/json
 ###
 
 # добавление измерения
-POST {{baseUrl}}/measurements/1/
+POST {{baseUrl}}/measurements/
 Content-Type: application/json
 
 {
@@ -61,5 +61,5 @@ Content-Type: application/json
 ###
 
 # Удаление датчика
-DELETE {{baseUrl}}/sensors/8/
+DELETE {{baseUrl}}/sensors/17/
 Content-Type: application/json

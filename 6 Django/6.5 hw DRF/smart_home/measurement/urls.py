@@ -1,13 +1,17 @@
 from django.urls import path
-from .views import sensors, measurements, get_sensors, get_measurements, test
+
+
+from .views import test, SensorView, MeasurementsView, GetSensorView, \
+    GetMeasurementsView
 
 urlpatterns = [
     # TODO: зарегистрируйте необходимые маршруты
 
-    path('measurements/<int:pk>/', get_measurements, name='get_measurements'),
-    path('measurements/', measurements, name='measurements'),
-    path('sensors/', sensors, name='sensors'),
-    path('sensors/<int:pk>/', get_sensors, name='get_sensors'),
+    path('measurements/<int:pk>/', GetMeasurementsView.as_view(), 
+         name='get_measurements'),
+    path('measurements/', MeasurementsView.as_view(), name='measurements'),
+    path('sensors/', SensorView.as_view(), name='sensors'),
+    path('sensors/<int:pk>/', GetSensorView.as_view(), name='get_sensors'),
     path('test/', test, name='test'),
 
 ]

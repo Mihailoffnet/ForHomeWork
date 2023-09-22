@@ -3,28 +3,19 @@ from .models import Sensor, Measurement
 
 # TODO: опишите необходимые сериализаторы
 
-class SensorSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField()
-    description = serializers.CharField()
+class SensorSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Sensor
         fields = ['id', 'name', 'description']
 
-class MeasurementSerializer(serializers.Serializer):
-    # sensor = serializers.CharField()
-    value = serializers.FloatField()
-    data_measure = serializers.DateTimeField()
+class MeasurementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Measurement
-        fields = ['sensor', 'value', 'data_measure']
+        fields = ['value', 'data_measure']
 
-class SensorMesurementSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField()
-    description = serializers.CharField()
+class SensorMesurementSerializer(serializers.ModelSerializer):
     measurement = MeasurementSerializer(read_only=True, many=True)
     
     class Meta:
