@@ -9,5 +9,5 @@ class SensorAdmin(admin.ModelAdmin):
 
 @admin.register(Measurement)
 class SensorAdmin(admin.ModelAdmin):
-    list_display = ['id', 'value', 'data_measure']
-    list_filter = ['value',]
+    list_display = ['id', 'temperature', 'data_measure']
+    list_filter = ['temperature',]
