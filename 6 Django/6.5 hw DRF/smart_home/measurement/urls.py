@@ -7,11 +7,13 @@ from .views import test, SensorView, MeasurementsView, GetSensorView, \
 urlpatterns = [
     # TODO: зарегистрируйте необходимые маршруты
 
-    path('measurements/<int:pk>/', GetMeasurementsView.as_view(), 
-         name='get_measurements'),
-    path('measurements/', MeasurementsView.as_view(), name='measurements'),
     path('sensors/', SensorView.as_view(), name='sensors'),
     path('sensors/<int:pk>/', GetSensorView.as_view(), name='get_sensors'),
+    path('measurements/', MeasurementsView.as_view(), name='measurements'),
+    path('measurements/<int:pk>/', GetMeasurementsView.as_view(), 
+         name='get_measurements'),
+
+
     path('test/', test, name='test'),
 
 ]
