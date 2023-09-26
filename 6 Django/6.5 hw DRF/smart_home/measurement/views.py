@@ -5,9 +5,11 @@
 # from django.shortcuts import render
 import json
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, \
+    ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import generics
 from measurement.models import Sensor, Measurement
 from measurement.serializers import SensorSerializer, MeasurementSerializer, \
     SensorMesurementSerializer
@@ -21,60 +23,49 @@ def test(request):
         data = {'message': f'Датчик: {sensor} успешно создан'}
         print(data)
         return Response(data)
+    
 
-
-class SensorView(ListAPIView):
-
+class SensorView(generics.ListCreateAPIView):
     queryset = Sensor.objects.all()
     serializer_class = SensorSerializer
 
-    def post(self, request):
-        body = json.loads(request.body)
-        sensor = Sensor(name=body['name'], description=body['description'])
-        sensor.save()
-        data = {'message': f'Датчик: {sensor} успешно создан'}
-        return Response(data)
-    
 class GetSensorView(RetrieveAPIView):
-
     queryset = Sensor.objects.all()
     serializer_class = SensorMesurementSerializer
 
     def patch(self, request, pk):
         body = json.loads(request.body)
-        sensor = Sensor.objects.filter(id=pk)[0]
-        old_description = sensor.description
-        new_description = old_description + ' / ' + body['description']
-        sensor = Sensor.objects.filter(id=pk).update(description=
-                                                     new_description)
-        data = {'message': f'Сенсор {pk} успешно изменен'}
-        return Response(data)
-
-    def delete(self, request, pk):
-        sensor = Sensor.objects.filter(id=pk)
-        info = sensor[0]
-        sensor.delete()
-        data = {'message': f'Датчик {info} успешно удален'}
+        if not Sensor.objects.filter(id=pk):
+            data = {'message': f'Сенсор {pk} не найден'}
+        else:
+            sensor = Sensor.objects.filter(id=pk).update(description=body['description'])
+            data = {'message': f'Сенсор {pk} успешно изменен'}
         return Response(data)
     
-class MeasurementsView(ListAPIView):
+    def delete(self, request, pk):
+        sensor = Sensor.objects.filter(id=pk)
+        if not sensor:
+            data = {'message': f'Датчик {pk} не найден базе'}
+        else:
+            info = sensor[0]
+            sensor.delete()
+            data = {'message': f'Датчик {info} успешно удален'}
+        return Response(data)
+
+    
+class MeasurementsView(generics.ListCreateAPIView):
 
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
-
-    def post(self, request):
-        body = json.loads(request.body)
-        measurement = Measurement(sensor_id=body['sensor'], value=
-                                  body['temperature'])
-        measurement.save()
-        data = {'message': f'Измерение: {measurement} успешно создано'}
-        return Response(data)
 
 class GetMeasurementsView(RetrieveAPIView):
 
     def delete(self, request, pk):
         measurement = Measurement.objects.filter(id=pk)
-        info = measurement[0]
-        measurement.delete()
-        data = {'message': f'Измерение {pk} - {info} успешно удалено'}
+        if not measurement:
+            data = {'message': f'Измерение {pk} не найдено'}
+        else:
+            info = measurement[0]
+            measurement.delete()
+            data = {'message': f'Измерение {pk} - {info} успешно удалено'}
         return Response(data)
