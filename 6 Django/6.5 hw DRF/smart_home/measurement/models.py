@@ -20,7 +20,7 @@ class Sensor(models.Model):
 class Measurement(models.Model):
     sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, related_name=
                                'measurement')
-    value = models.FloatField(null=False, blank=False,
+    temperature = models.FloatField(null=False, blank=False,
                               verbose_name='Температура')
     data_measure = models.DateTimeField(auto_now=True,
                                         verbose_name='Дата и время измерения')
@@ -31,4 +31,4 @@ class Measurement(models.Model):
         verbose_name_plural = 'Измерения'
 
     def __str__(self):
-        return f'Датчик {self.sensor} {self.value} гр.С, {self.data_measure}'
+        return f'Датчик {self.sensor} {self.temperature} гр.С, {self.data_measure}'
