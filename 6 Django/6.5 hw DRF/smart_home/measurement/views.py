@@ -1,7 +1,6 @@
 # TODO: опишите необходимые обработчики, 
 # TODO: рекомендуется использовать generics APIView классы:
 # TODO: ListCreateAPIView, RetrieveUpdateAPIView, CreateAPIView
-
 # from django.shortcuts import render
 import json
 from rest_framework.decorators import api_view
@@ -13,17 +12,6 @@ from rest_framework import generics
 from measurement.models import Sensor, Measurement
 from measurement.serializers import SensorSerializer, MeasurementSerializer, \
     SensorMesurementSerializer
-
-@api_view(['GET', 'POST', 'PATCH', 'DELETE'])
-def test(request):
-    if request.method == 'POST':
-        body = json.loads(request.body)
-        sensor = Sensor(name=body['name'], description=body['description'])
-        sensor.save()
-        data = {'message': f'Датчик: {sensor} успешно создан'}
-        print(data)
-        return Response(data)
-    
 
 class SensorView(generics.ListCreateAPIView):
     queryset = Sensor.objects.all()
