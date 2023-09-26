@@ -13,7 +13,4 @@ urlpatterns = [
     path('measurements/<int:pk>/', GetMeasurementsView.as_view(), 
          name='get_measurements'),
 
-
-    path('test/', test, name='test'),
-
 ]
