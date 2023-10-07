@@ -2,6 +2,7 @@
 token.txt
 __pycache__/
 _*
+*.zip
 
 # IDE specific
 .idea/
