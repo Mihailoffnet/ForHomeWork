@@ -9,8 +9,8 @@ POST {{baseUrl}}/products/
 Content-Type: application/json
 
 {
-  "title": "Огурец короткий",
-  "description": "Короткий, с шипами"
+  "title": "Арбуз",
+  "description": "Оренбургский, холодок"
 }
 
 ###
@@ -22,17 +22,17 @@ Content-Type: application/json
 ###
 
 # обновление продукта (сделано)
-PATCH {{baseUrl}}/products/6/
+PATCH {{baseUrl}}/products/10/
 Content-Type: application/json
 
 {
-  "description": "Лучшие томаты на рынке 6"
+  "description": "Оренбургский, пятнистый, холодок"
 }
 
 ###
 
 # удаление продукта (сделано)
-DELETE {{baseUrl}}/products/8/
+DELETE {{baseUrl}}/products/10/
 
 
 ###
@@ -50,7 +50,7 @@ Content-Type: application/json
 ###
 
 # удаление склада (сделано)
-DELETE {{baseUrl}}/stocks/11/
+DELETE {{baseUrl}}/stocks/12/
 
 ###
 
