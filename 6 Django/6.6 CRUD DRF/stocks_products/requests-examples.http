@@ -14,7 +14,7 @@ Content-Type: application/json
 ###
 
 # получение продуктов (сделано)
-GET {{baseUrl}}/products/?page=2
+GET {{baseUrl}}/products/
 Content-Type: application/json
 
 ###
