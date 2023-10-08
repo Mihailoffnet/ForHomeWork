@@ -7,14 +7,14 @@ POST {{baseUrl}}/products/
 Content-Type: application/json
 
 {
-  "title": "Огурец",
-  "description": "Длинный, гладкий"
+  "title": "Огурец короткий",
+  "description": "Короткий, с шипами"
 }
 
 ###
 
 # получение продуктов (сделано)
-GET {{baseUrl}}/products/
+GET {{baseUrl}}/products/?page=2
 Content-Type: application/json
 
 ###
@@ -48,7 +48,7 @@ Content-Type: application/json
 ###
 
 # удаление склада (сделано)
-DELETE {{baseUrl}}/stocks/5/
+DELETE {{baseUrl}}/stocks/11/
 
 ###
 
@@ -75,7 +75,7 @@ Content-Type: application/json
 ###
 
 # обновляем записи на складе
-PATCH {{baseUrl}}/stocks/4/
+PATCH {{baseUrl}}/stocks/3/
 Content-Type: application/json
 
 {
