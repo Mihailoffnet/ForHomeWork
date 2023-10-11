@@ -54,5 +54,8 @@ class StockProduct(models.Model):
         verbose_name ='Цена',
         validators=[MinValueValidator(0)],
     )
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return f'{self.stock} - {self.product}'

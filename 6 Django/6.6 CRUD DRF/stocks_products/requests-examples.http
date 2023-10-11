@@ -16,7 +16,7 @@ Content-Type: application/json
 ###
 
 # получение продуктов (сделано)
-GET {{baseUrl}}/products/?page=1
+GET {{baseUrl}}/products/?page=2
 Content-Type: application/json
 
 ###
@@ -32,7 +32,7 @@ Content-Type: application/json
 ###
 
 # удаление продукта (сделано)
-DELETE {{baseUrl}}/products/9/
+DELETE {{baseUrl}}/products/12/
 
 
 ###
@@ -50,7 +50,7 @@ Content-Type: application/json
 ###
 
 # удаление склада (сделано)
-DELETE {{baseUrl}}/stocks/25/
+DELETE {{baseUrl}}/stocks/40/
 
 ###
 
@@ -76,8 +76,8 @@ Content-Type: application/json
 
 ###
 
-# обновляем записи на складе
-PATCH {{baseUrl}}/stocks/26/
+# обновляем записи на складе (сделано)
+PATCH {{baseUrl}}/stocks/41/
 Content-Type: application/json
 
 {
@@ -88,7 +88,7 @@ Content-Type: application/json
       "price": 130.80
     },
     {
-      "product": 3,
+      "product": 6,
       "quantity": 243,
       "price": 145
     }
@@ -97,6 +97,6 @@ Content-Type: application/json
 
 ###
 
-# поиск складов, где есть определенный продукт
-GET {{baseUrl}}/stocks/?products=1
+# поиск складов, где есть определенный продукт (сделано)
+GET {{baseUrl}}/stocks/?products=2
 Content-Type: application/json
