@@ -21,16 +21,8 @@ class ProductViewSet(ModelViewSet):
 class StockViewSet(ModelViewSet):
     queryset = Stock.objects.all()
     serializer_class = StockSerializer
-    # print(queryset)
-    # print(type(queryset))
-    # print()
-    # for item in queryset:
-    #     print(item.positions)
-    #     print(type(item.positions))
 
-    # products = ''
-    # products = queryset()
     # при необходимости добавьте параметры фильтрации
-    # filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    # filterset_fields = ['products',] # DjangoFilterBackend
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['products',] # DjangoFilterBackend
     # search_fields = ['title', 'description',]

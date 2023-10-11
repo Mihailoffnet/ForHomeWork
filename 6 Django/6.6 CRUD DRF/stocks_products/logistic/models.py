@@ -54,3 +54,5 @@ class StockProduct(models.Model):
         verbose_name ='Цена',
         validators=[MinValueValidator(0)],
     )
+    def __str__(self):
+        return f'{self.stock} - {self.product}'

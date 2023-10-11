@@ -16,23 +16,23 @@ Content-Type: application/json
 ###
 
 # получение продуктов (сделано)
-GET {{baseUrl}}/products/
+GET {{baseUrl}}/products/?page=1
 Content-Type: application/json
 
 ###
 
 # обновление продукта (сделано)
-PATCH {{baseUrl}}/products/10/
+PATCH {{baseUrl}}/products/2/
 Content-Type: application/json
 
 {
-  "description": "Оренбургский, пятнистый, холодок"
+  "description": "Помидоры астраханские"
 }
 
 ###
 
 # удаление продукта (сделано)
-DELETE {{baseUrl}}/products/10/
+DELETE {{baseUrl}}/products/9/
 
 
 ###
@@ -50,11 +50,11 @@ Content-Type: application/json
 ###
 
 # удаление склада (сделано)
-DELETE {{baseUrl}}/stocks/12/
+DELETE {{baseUrl}}/stocks/25/
 
 ###
 
-# создание склада
+# создание склада (сделано)
 POST {{baseUrl}}/stocks/
 Content-Type: application/json
 
@@ -77,14 +77,14 @@ Content-Type: application/json
 ###
 
 # обновляем записи на складе
-PATCH {{baseUrl}}/stocks/3/
+PATCH {{baseUrl}}/stocks/26/
 Content-Type: application/json
 
 {
   "positions": [
     {
       "product": 2,
-      "quantity": 100,
+      "quantity": 110,
       "price": 130.80
     },
     {
@@ -98,5 +98,5 @@ Content-Type: application/json
 ###
 
 # поиск складов, где есть определенный продукт
-GET {{baseUrl}}/stocks/?products=2
+GET {{baseUrl}}/stocks/?products=1
 Content-Type: application/json
