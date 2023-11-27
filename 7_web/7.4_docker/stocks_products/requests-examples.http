@@ -1,0 +1,102 @@
+# примеры API-запросов
+
+@baseUrl = http://localhost:8000/api/v1
+
+###
+
+# создание продукта (сделано)
+POST {{baseUrl}}/products/
+Content-Type: application/json
+
+{
+  "title": "Дыня колхозница",
+  "description": "Колхозница, Оренбург"
+}
+
+###
+
+# получение продуктов (сделано)
+GET {{baseUrl}}/products/
+Content-Type: application/json
+
+###
+
+# обновление продукта (сделано)
+PATCH {{baseUrl}}/products/2/
+Content-Type: application/json
+
+{
+  "description": "Торпеда, Казахстан"
+}
+
+###
+
+# удаление продукта (сделано)
+DELETE {{baseUrl}}/products/3/
+
+
+###
+
+# поиск продуктов по названию и описанию (сделано)
+GET {{baseUrl}}/products/?search=Дыня
+Content-Type: application/json
+
+###
+
+# просмотр складов (cделано)
+GET {{baseUrl}}/stocks/
+Content-Type: application/json
+
+###
+
+# удаление склада (сделано)
+DELETE {{baseUrl}}/stocks/1/
+
+###
+
+# создание склада (сделано)
+POST {{baseUrl}}/stocks/
+Content-Type: application/json
+
+{
+  "address": "Склад в другом городе",
+  "positions": [
+    {
+      "product": 1,
+      "quantity": 10,
+      "price": 12.50
+    },
+    {
+      "product": 3,
+      "quantity": 15,
+      "price": 95
+    }
+  ]
+}
+
+###
+
+# обновляем записи на складе (сделано)
+PATCH {{baseUrl}}/stocks/41/
+Content-Type: application/json
+
+{
+  "positions": [
+    {
+      "product": 2,
+      "quantity": 110,
+      "price": 130.80
+    },
+    {
+      "product": 6,
+      "quantity": 243,
+      "price": 145
+    }
+  ]
+}
+
+###
+
+# поиск складов, где есть определенный продукт (сделано)
+GET {{baseUrl}}/stocks/?products=3
+Content-Type: application/json

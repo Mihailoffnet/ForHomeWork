@@ -1,0 +1,4 @@
+Host testserver
+    HostName 80.78.248.233
+    Port 22
+    User root
