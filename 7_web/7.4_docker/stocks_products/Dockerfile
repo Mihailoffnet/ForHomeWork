@@ -9,7 +9,8 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 # Устанавливаем виртуальное окружение
 ENV MY_ENV=venv
 # Добавить мета-информацию к образу для открытия порта к прослушиванию.
-EXPOSE 8080
+# EXPOSE 8000
 # Выполнить команду внутри контейнера
 
-CMD ["python3", "manage.py", "runserver"]
+# CMD ["python3", "manage.py", "runserver", "--host", "0.0.0.0", "--port", "8000"]
+CMD python manage.py runserver 0.0.0.0:8000
