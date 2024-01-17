@@ -53,10 +53,10 @@ def get_http_error(error_class, message):
 
 async def get_advert_by_id(session: Session, advert_id: int):
     advert = await session.get(Advert, advert_id)
-    if advert is None:
-        raise get_http_error(
-            web.HTTPNotFound, f"Advert with id {advert_id} not found"
-            )
+    # if advert is None:
+    #     raise get_http_error(
+    #         web.HTTPNotFound, f"Advert with id {advert_id} not found"
+    #         )
     return advert
 
 
