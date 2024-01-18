@@ -1,24 +1,9 @@
 import json
 
-# import bcrypt
 from aiohttp import web
 from sqlalchemy.exc import IntegrityError
 
 from models import Session, Advert, engine, init_db
-# from schema import CreateAdvert, UpdateAdvert
-
-
-# def hash_password(password: str):
-#     password = password.encode()
-#     password = bcrypt.hashpw(password, bcrypt.gensalt())
-#     password = password.decode()
-#     return password
-
-
-# def check_password(password: str, hashed_password: str):
-#     password = password.encode()
-#     hashed_password = hashed_password.encode()
-#     return bcrypt.checkpw(password, hashed_password)
 
 
 app = web.Application()
@@ -53,10 +38,10 @@ def get_http_error(error_class, message):
 
 async def get_advert_by_id(session: Session, advert_id: int):
     advert = await session.get(Advert, advert_id)
-    # if advert is None:
-    #     raise get_http_error(
-    #         web.HTTPNotFound, f"Advert with id {advert_id} not found"
-    #         )
+    if advert is None:
+        raise get_http_error(
+            web.HTTPNotFound, f"Advert with id {advert_id} not found"
+            )
     return advert
 
 
@@ -87,18 +72,16 @@ class AdvertView(web.View):
 
     async def post(self):
         json_data = await self.request.json()
-        # json_data = await validate(CreateAdvert, self.request.json())
-        # json_data["password"] = hash_password(json_data["password"])
         advert = Advert(**json_data)
         advert = await add_advert(self.session, advert)
         return web.json_response({"id": advert.id})
 
+    
+    
+
     async def patch(self):
         json_data = await self.request.json()
-        # json_data = await validate(UpdateAdvert, self.request.json())
         advert = await self.get_current_advert()
-        # if "password" in json_data:
-        #     json_data["password"] = hash_password(json_data["password"])
         for field, value in json_data.items():
             setattr(advert, field, value)
         advert = await add_advert(self.session, advert)
