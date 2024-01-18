@@ -28,14 +28,6 @@ async def main():
     print(response.status)
     print(await response.json())
 
-    response = await client.post(
-        "http://127.0.0.1:8080/advert",
-        json={"title": "test_2", "text": "test test test"},
-        )
-    print(response.status)
-    print(await response.json())
-    
-
     response = await client.get(
         "http://127.0.0.1:8080/advert/1",
         )
